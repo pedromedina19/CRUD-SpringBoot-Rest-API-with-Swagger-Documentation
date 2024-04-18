@@ -30,6 +30,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/product").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/product/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/product/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/v3/api-docs.yaml/**", "/swagger-resources/**", "/webjars/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

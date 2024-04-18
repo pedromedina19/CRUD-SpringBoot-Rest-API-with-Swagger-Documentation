@@ -1,5 +1,6 @@
 package com.example.crud.domain.product;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,11 +14,8 @@ import lombok.*;
 public class Product {
     @Id @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-
     private String name;
-
     private Integer price_in_cents;
-
     private Boolean active;
 
     public Product(RequestProduct requestProduct){

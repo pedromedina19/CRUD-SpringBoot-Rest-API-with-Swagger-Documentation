@@ -1,34 +1,83 @@
-A simple CRUD api using Spring and Spring data JPA. And implementing JWT auth with Spring Security
-<br>
-1. Start the application with Maven
-2. The API will be accessible at http://localhost:8080
-
-
-## API Endpoints
-The API provides the following endpoints:
-
 ```markdown
+# Documentação da API
+- A API estará acessível em http://localhost:8080
+- Está sendo usado como BD o postgresql, e o nome do banco de dados é product
 
-POST /auth/login - Login into the App
+## Autenticação
 
-POST /auth/register - Register a new user into the App
+### POST /auth/login
 
-GET /product - Retrieve a list of all data.
+Autentica um usuário e retorna um token.
 
-POST /product - Register a new data.
+**Corpo da requisição**:
 
-PUT /product - Alter data.
-
-DELETE /product/{id} - Inactivate data.
-
+```json
+{
+  "login": "usuario",
+  "password": "senha"
+}
 ```
-## Authentication
-The API uses Spring Security for authentication control. The following roles are available:
 
+### POST /auth/register
+
+Registra um novo usuário.
+
+**Corpo da requisição**:
+
+```json
+{
+  "login": "usuario",
+  "password": "senha",
+  "role": "USER"
+}
 ```
-USER -> Standard user role for logged-in users.
-ADMIN -> Admin role for managing partners (registering new partners).
+
+## Produtos
+
+### GET /product
+
+Retorna uma lista de todos os produtos ativos.
+
+**Permissões**: Qualquer usuário autenticado.
+
+### POST /product
+
+Registra um novo produto.
+
+**Corpo da requisição**:
+
+```json
+{
+  "name": "Produto",
+  "price_in_cents": 1000
+}
 ```
-To access protected endpoints as an ADMIN user, provide the appropriate authentication credentials in the request header.
-## Database
-The project uses PostgresSQL as the database. The necessary database migrations are managed using Flyway.
+
+**Permissões**: Apenas usuários com a função ADMIN.
+
+### PUT /product
+
+Atualiza um produto existente.
+
+**Corpo da requisição**:
+
+```json
+{
+  "id": "id-do-produto",
+  "name": "Novo Nome",
+  "price_in_cents": 2000
+}
+```
+
+**Permissões**: Apenas usuários com a função ADMIN.
+
+### DELETE /product/{id}
+
+Deleta um produto.
+
+**Permissões**: Apenas usuários com a função ADMIN.
+
+## Documentação da API
+
+A documentação completa da API pode ser encontrada em `http://localhost:8080/swagger-ui.html`.
+```

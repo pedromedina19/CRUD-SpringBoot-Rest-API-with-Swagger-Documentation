@@ -3,6 +3,10 @@ package com.example.crud.controllers;
 import com.example.crud.domain.product.Product;
 import com.example.crud.repositories.ProductRepository;
 import com.example.crud.domain.product.RequestProduct;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,17 +16,27 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+@Tag(name = "Controller de produtos", description = "Endpoints de CRUD de produtos")
 @RestController
 @RequestMapping("/product")
 public class ProductController {
     @Autowired
     private ProductRepository repository;
+    @Operation(summary = "Obter todos os produtos", description = "Retornar uma lista de todos os produtos ativos")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Produtos obtidos com sucesso")
+    })
     @GetMapping
     public ResponseEntity getAllProducts(){
         var allProducts = repository.findAllByActiveTrue();
         return ResponseEntity.ok(allProducts);
     }
 
+    @Operation(summary = "Registrar um novo produto", description = "Registrar um novo produto e retornar um código de status")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Produto registrado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Detalhes do produto inválidos fornecidos")
+    })
     @PostMapping
     public ResponseEntity registerProduct(@RequestBody @Valid RequestProduct data){
         Product newProduct = new Product(data);
@@ -30,7 +44,12 @@ public class ProductController {
         repository.save(newProduct);
         return ResponseEntity.ok().build();
     }
-
+    @Operation(summary = "Atualizar um produto", description = "Atualizar um produto e retornar o produto atualizado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Produto atualizado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Detalhes do produto inválidos fornecidos"),
+            @ApiResponse(responseCode = "404", description = "Produto não encontrado")
+    })
     @PutMapping
     @Transactional
     public ResponseEntity updateProduct(@RequestBody @Valid RequestProduct data){
@@ -46,6 +65,11 @@ public class ProductController {
 
     }
 
+    @Operation(summary = "Deletar um produto", description = "Deletar um produto e retornar um código de status")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Produto deletado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Produto não encontrado")
+    })
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity deleteProduct(@PathVariable String id){
